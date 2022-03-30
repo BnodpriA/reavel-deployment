@@ -40,7 +40,6 @@ services:
       context: ../reavel-ui/
       dockerfile: ../reavel-ui/Dockerfile
       target: development
-    image: 'nginx'
     container_name: reavel_ui
     ports:
      - 3000:3000
