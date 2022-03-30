@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  reavel-backend-web:
+    build: 
+      context: ../reavel-backend/
+      dockerfile: ../reavel/Dockerfile
+    image: 'php_apache'
+    container_name: reavel_backend_webserver
+    ports:
+      - "9443:443/tcp"
+      - "9080:80/tcp"
+    volumes:
+      - ../reavel-backend/:/var/www/html
+  reavel-database:
+    image: mysql
+    container_name: reavel_db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root@reavelDB
+      - MYSQL_DATABASE=reavel
+      - MYSQL_USER=reavel
+      - MYSQL_PASSWORD=reavel@reavelDB
+    ports:
+      - "33999:3306"
+    depends_on:
+      - reavel-backend-web
+  selenium:
+    image: selenium/standalone-chrome
+    container_name: 'reavel_selenium'
+    restart: 'always'
+    ports:
+    - '14445:24444'
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: 'reavel_mailhog'
+    restart: always
+    ports:
+      - 1125:1025
+      - 8125:8025
+  reavel-ui:
+    build:
+      context: ../reavel-ui/
+      dockerfile: ../reavel-ui/Dockerfile
+      target: development
+    image: 'nginx'
+    container_name: reavel_ui
+    ports:
+     - 3000:3000
+    volumes:
+      - ../reavel-ui/src:/app/src
